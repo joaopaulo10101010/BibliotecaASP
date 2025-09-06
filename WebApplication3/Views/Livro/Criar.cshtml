@@ -1,0 +1,79 @@
+﻿@model WebApplication3.Models.Livros
+
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewData["Title"] = "Novo Livro";
+
+}
+
+<h2>Novo Livro</h2>
+
+
+
+<form asp-action="Criar" method="post">
+
+    @Html.AntiForgeryToken()
+
+
+
+    <div><label>Título</label><input asp-for="Titulo" required /></div>
+
+
+
+    <div>
+
+        <label>Autor</label>
+
+        <select asp-for="AutorId" name="autor" asp-items="ViewBag.Autores">
+
+            <option value="">(Selecione)</option>
+
+        </select>
+
+    </div>
+
+
+
+    <div>
+
+        <label>Editora</label>
+
+        <select asp-for="EditoraId" name="editora" asp-items="ViewBag.Editoras">
+
+            <option value="">(Selecione)</option>
+
+        </select>
+
+    </div>
+
+
+
+    <div>
+
+        <label>Gênero</label>
+
+        <select asp-for="GeneroId" name="genero" asp-items="ViewBag.Generos">
+
+            <option value="">(Selecione)</option>
+
+        </select>
+
+    </div>
+
+
+
+    <div><label>Ano</label><input asp-for="Ano" type="number" /></div>
+
+    <div><label>ISBN</label><input asp-for="Isbn" /></div>
+
+    <div><label>Quantidade total</label>
+        <input asp-for="QuantidadeTotal" type="number" min="1" value="1" required />
+        </div>
+
+
+
+    <button type="submit">Salvar</button>
+
+</form> 
