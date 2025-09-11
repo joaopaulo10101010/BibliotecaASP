@@ -129,7 +129,32 @@ namespace WebApplication3.Controllers
         public IActionResult Criar(string titulo, string autor, string editora, string genero, string ano, string isbn, string quantidade)
         {
 
+            Console.WriteLine($"Titulo: {titulo}\nAutor: {autor}\nEditora: {editora}\nGenero: {genero}\nAno: {ano}\nIsbn: {isbn}\nQuantidade: {quantidade}");
+
+            using var conn = db.GetConnection();
+            using (var cmd = new MySqlCommand("sp_livro_criar", conn))
+            {
+                cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("p_titulo", titulo);
+                cmd.Parameters.AddWithValue("p_autor", autor);
+                cmd.Parameters.AddWithValue("p_editora", editora);
+                cmd.Parameters.AddWithValue("p_genero", genero);
+                cmd.Parameters.AddWithValue("p_ano", ano);
+                cmd.Parameters.AddWithValue("p_isbn", isbn);
+                cmd.Parameters.AddWithValue("p_quantidade", quantidade);
+                cmd.ExecuteNonQuery();
+                cmd.Dispose();
+            }
+            
+
+
             return RedirectToAction("Criar");
         }
     }
 }
+
+
+/*
+    Copa do mundo de 2026
+ 
+ */
