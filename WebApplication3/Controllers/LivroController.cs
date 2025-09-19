@@ -51,6 +51,86 @@ namespace WebApplication3.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult Editar(int id)
+        {
+            using var conn = db.GetConnection();
+
+            Livros? livro = null;
+            using (var cmd = new MySqlCommand("sp_livro_obter", conn) { CommandType = System.Data.CommandType.StoredProcedure})
+            {
+                cmd.Parameters.AddWithValue("p_id", id);
+                using var rd = cmd.ExecuteReader();
+                if (rd.Read())
+                {
+                    livro = new Livros
+                    {
+                        Id = rd.GetInt32("id"),
+                        Titulo = rd.GetString("titulo"),
+                        AutorId = rd["autor"] == DBNull.Value ? null : (int?)rd.GetInt32("autor"),
+                        EditoraId = rd["editora"] == DBNull.Value ? null : (int?)rd.GetInt32("editora"),
+                        GeneroId = rd["genero"] == DBNull.Value ? null : (int?)rd.GetInt32("genero"),
+                        Ano = rd["ano"] == DBNull.Value ? null : (short?)rd.GetInt32("ano"),
+                        Isbn = rd["isbn"] as string,
+                        QuantidadeTotal = rd.GetInt32("quantidade_total")
+                    };
+                }
+            }
+
+            if (livro == null) return NotFound();
+
+            ViewBag.Autores = CarregarAutores(conn);
+            ViewBag.Editoras = CarregarEditoras(conn);
+            ViewBag.Generos = CarregarGeneros(conn);
+                
+            return View();
+        }
+        [HttpPost]
+        public IActionResult Editar(Livros model)
+        {
+            if (model.Id <= 0) return NotFound();
+            if(string.IsNullOrWhiteSpace(model.Titulo) || model.QuantidadeTotal < 1)
+            {
+                ModelState.AddModelError("","Informe titulo e quantidade total (>-1)");
+            }
+
+            using var conn2 = db.GetConnection();
+            using var cmd = new MySqlCommand("sp_livro_atualizar", conn2) { CommandType = System.Data.CommandType.StoredProcedure };
+            cmd.Parameters.AddWithValue("p_id",model.Id);
+            cmd.Parameters.AddWithValue("p_titulo", model.Titulo);
+            cmd.Parameters.AddWithValue("p_autor", model.AutorId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("p_editora", model.EditoraId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("p_genero", model.GeneroId ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("p_ano", model.Ano ?? (object)DBNull.Value);
+            cmd.Parameters.AddWithValue("p_isbn", (object?)model.Isbn ?? DBNull.Value);
+            cmd.Parameters.AddWithValue("p_novo_total", model.QuantidadeTotal);
+            cmd.ExecuteNonQuery();
+
+            TempData["Ok"] = "Livro Atualizado";
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        public IActionResult Excluir(int id)
+        {
+            using var conn = db.GetConnection();
+            try
+            {
+                using var cmd = new MySqlCommand("sp_livro_excluir", conn) { CommandType = System.Data.CommandType.StoredProcedure };
+                cmd.Parameters.AddWithValue("p_id", id);
+                cmd.ExecuteNonQuery();
+                TempData["Ok"] = "Livro Excluido";
+            }
+            catch (Exception ex)
+            {
+                TempData["Ok"] = ex.Message;
+            }
+
+
+            return RedirectToAction(nameof(Index));
+        }
+
 
         [HttpGet]
         public IActionResult Index()
@@ -66,11 +146,8 @@ namespace WebApplication3.Controllers
             using var rd = cmd.ExecuteReader();
 
             while (rd.Read())
-
             {
-
                 lista.Add(new Livros
-
                 {
 
                     Id = rd.GetInt32("id"),
@@ -98,11 +175,10 @@ namespace WebApplication3.Controllers
                     QuantidadeDisponivel = rd.GetInt32("quantidade_disponivel"),
 
                     CriadoEm = rd.GetDateTime("criado_em")
-
                 });
 
             }
-
+            Console.WriteLine("a quantidade da lista é " + lista.Count.ToString());
             return View(lista);
 
         }
@@ -128,33 +204,38 @@ namespace WebApplication3.Controllers
         [HttpPost]
         public IActionResult Criar(string titulo, string autor, string editora, string genero, string ano, string isbn, string quantidade)
         {
-
-            Console.WriteLine($"Titulo: {titulo}\nAutor: {autor}\nEditora: {editora}\nGenero: {genero}\nAno: {ano}\nIsbn: {isbn}\nQuantidade: {quantidade}");
-
-            using var conn = db.GetConnection();
-            using (var cmd = new MySqlCommand("sp_livro_criar", conn))
+            try
             {
-                cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                cmd.Parameters.AddWithValue("p_titulo", titulo);
-                cmd.Parameters.AddWithValue("p_autor", autor);
-                cmd.Parameters.AddWithValue("p_editora", editora);
-                cmd.Parameters.AddWithValue("p_genero", genero);
-                cmd.Parameters.AddWithValue("p_ano", ano);
-                cmd.Parameters.AddWithValue("p_isbn", isbn);
-                cmd.Parameters.AddWithValue("p_quantidade", quantidade);
-                cmd.ExecuteNonQuery();
-                cmd.Dispose();
+                Console.WriteLine($"Titulo: {titulo}\nAutor: {autor}\nEditora: {editora}\nGenero: {genero}\nAno: {ano}\nIsbn: {isbn}\nQuantidade: {quantidade}");
+
+                using var conn = db.GetConnection();
+                using (var cmd = new MySqlCommand("sp_livro_criar", conn))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("p_titulo", titulo);
+                    cmd.Parameters.AddWithValue("p_autor", autor);
+                    cmd.Parameters.AddWithValue("p_editora", editora);
+                    cmd.Parameters.AddWithValue("p_genero", genero);
+                    cmd.Parameters.AddWithValue("p_ano", ano);
+                    cmd.Parameters.AddWithValue("p_isbn", isbn);
+                    cmd.Parameters.AddWithValue("p_quantidade", quantidade);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                }
+                TempData["ok"] = "Cadastro Realizado";
+                return RedirectToAction("Index");
             }
-            
-
-
-            return RedirectToAction("Criar");
+            catch(Exception ex)
+            {
+                TempData["ok"] = "Cadastro Não Realizado";
+                Console.WriteLine($"Uma Exception aconteceu: {ex.Message}");
+                return RedirectToAction("Criar");
+            }
         }
     }
 }
 
 
 /*
-    Copa do mundo de 2026
- 
+
  */

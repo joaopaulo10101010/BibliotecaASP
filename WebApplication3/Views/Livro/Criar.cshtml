@@ -70,10 +70,11 @@
 
     <div><label>Quantidade total</label>
         <input asp-for="QuantidadeTotal" name="quantidade" type="number" min="1" value="1" required />
-        </div>
+    </div>
 
 
 
     <button type="submit">Salvar</button>
+    <h1>@TempData["Ok"]</h1>
 
 </form> 

@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using WebApplication3.Authenticacao;
 using WebApplication3.Models;
 
 namespace WebApplication3.Controllers
@@ -15,6 +16,8 @@ namespace WebApplication3.Controllers
 
         public IActionResult Index()
         {
+            if (!HttpContext.Session.GetInt32(SessionKeys.UserId).HasValue)
+                return RedirectToAction("Login", "Auth");
             return View();
         }
 

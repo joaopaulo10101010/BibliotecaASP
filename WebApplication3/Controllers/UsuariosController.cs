@@ -2,6 +2,7 @@
 using WebApplication3.Models;
 using WebApplication3.DataBase;
 using MySql.Data.MySqlClient;
+using BCrypt;
 
 namespace WebApplication3.Controllers
 {
@@ -27,7 +28,7 @@ namespace WebApplication3.Controllers
             cmd.CommandType = System.Data.CommandType.StoredProcedure;
             cmd.Parameters.AddWithValue("p_nome", vm.nome);
             cmd.Parameters.AddWithValue("p_email", vm.email);
-            cmd.Parameters.AddWithValue("p_senha_hash", vm.senha_hash);
+            cmd.Parameters.AddWithValue("p_senha_hash", BCrypt.Net.BCrypt.HashPassword(vm.senha_hash, workFactor: 12));
             cmd.Parameters.AddWithValue("p_role", vm.role);
             cmd.ExecuteNonQuery();
             return RedirectToAction("CriarUsuario");

@@ -1,0 +1,84 @@
+﻿@model WebApplication3.Models.Genero
+
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewData["Title"] = "Editar Genero";
+
+}
+
+
+
+<div class="page-header">
+
+    <h2>Editar Genero</h2>
+
+</div>
+
+
+
+<div class="card">
+
+    @if (!ViewData.ModelState.IsValid)
+
+    {
+
+        <div class="validation">
+
+            @foreach (var e in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+
+            {
+
+                <div>@e.ErrorMessage</div>
+
+            }
+
+        </div>
+
+    }
+
+
+
+    <form asp-action="Editar" method="post" class="form">
+
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="Id" />
+
+
+
+        <div class="form-grid">
+
+            <div class="field">
+
+                <label>Id</label>
+
+                <input asp-for="Id" class="input" value="@Model.Id" required readonly />
+
+            </div>
+
+
+
+            <div class="field">
+
+                <label>Nome</label>
+
+                <input asp-for="Nome" class="input" value="@Model.Nome" required />
+
+            </div>
+
+
+            <div class="form-actions">
+
+                <a asp-action="Index" class="btn btn-light">Cancelar</a>
+
+                <button type="submit" class="btn btn-primary">Salvar</button>
+
+            </div>
+        </div>
+
+    </form>
+
+</div>
+

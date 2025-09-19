@@ -35,47 +35,47 @@
 
     .tbl {
 
-        width: 100%;
+    width: 100%;
 
-        border-collapse: collapse;
+    border-collapse: collapse;
 
-        table-layout: auto;
+    table-layout: auto;
 
     }
 
 
 
-        .tbl th, .tbl td {
+    .tbl th, .tbl td {
 
-            padding: 8px 12px;
+    padding: 8px 12px;
 
-            border-bottom: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
 
-            vertical-align: middle;
+    vertical-align: middle;
 
-            text-align: left;
+    text-align: left;
 
-            white-space: nowrap;
+    white-space: nowrap;
 
-        }
-
-
-
-        .tbl thead th {
-
-            border-bottom: 2px solid #d0d0d0;
-
-            font-weight: 600;
-
-        }
+    }
 
 
 
-        .tbl tbody tr:nth-child(even) {
+    .tbl thead th {
 
-            background: #fafafa;
+    border-bottom: 2px solid #d0d0d0;
 
-        }
+    font-weight: 600;
+
+    }
+
+
+
+    .tbl tbody tr:nth-child(even) {
+
+    background: #fafafa;
+
+    }
 
 
 
@@ -83,7 +83,7 @@
 
     .col-acoes {
 
-        text-align: center;
+    text-align: center;
 
     }
 
@@ -91,7 +91,7 @@
 
     .tbl td:last-child {
 
-        text-align: center;
+    text-align: center;
 
     }
 
@@ -99,83 +99,83 @@
 
     .acoes {
 
-        display: inline-flex;
+    display: inline-flex;
 
-        gap: 8px;
+    gap: 8px;
 
-        align-items: center;
+    align-items: center;
 
-        justify-content: center;
+    justify-content: center;
 
     }
 
 
 
-        .acoes form {
+    .acoes form {
 
-            margin: 0;
+    margin: 0;
 
-        }
+    }
 
 
 
     .btn {
 
-        display: inline-block;
+    display: inline-block;
 
-        padding: 6px 12px;
+    padding: 6px 12px;
 
-        border: 1px solid #888;
+    border: 1px solid #888;
 
-        border-radius: 4px;
+    border-radius: 4px;
 
-        background: #f4f4f4;
+    background: #f4f4f4;
 
-        cursor: pointer;
+    cursor: pointer;
 
-        font: inherit;
+    font: inherit;
 
     }
 
 
 
-        .btn:hover {
+    .btn:hover {
 
-            background: #e9e9e9;
+    background: #e9e9e9;
 
-        }
+    }
 
 
 
     .btn-editar {
 
-        border-color: #3b82f6;
+    border-color: #3b82f6;
 
     }
 
 
 
-        .btn-editar:hover {
+    .btn-editar:hover {
 
-            background: #e6f0ff;
+    background: #e6f0ff;
 
-        }
+    }
 
 
 
     .btn-excluir {
 
-        border-color: #ef4444;
+    border-color: #ef4444;
 
     }
 
 
 
-        .btn-excluir:hover {
+    .btn-excluir:hover {
 
-            background: #ffeaea;
+    background: #ffeaea;
 
-        }
+    }
 
 </style>
 
@@ -213,7 +213,7 @@
 
     <tbody>
 
-        @foreach (var l in Model)
+        @foreach (var l in Model.OrderBy(p => p.Id))
 
         {
 
