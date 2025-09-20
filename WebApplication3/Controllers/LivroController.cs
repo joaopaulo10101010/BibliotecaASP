@@ -5,9 +5,11 @@ using WebApplication3.Models;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using WebApplication3.Authenticacao;
 
 namespace WebApplication3.Controllers
 {
+    [SessionAuthorize]
     public class LivroController : Controller
     {
         private readonly Database db = new Database();
@@ -108,7 +110,7 @@ namespace WebApplication3.Controllers
 
             TempData["Ok"] = "Livro Atualizado";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         [HttpPost, ValidateAntiForgeryToken]
@@ -229,7 +231,7 @@ namespace WebApplication3.Controllers
             {
                 TempData["ok"] = "Cadastro Não Realizado";
                 Console.WriteLine($"Uma Exception aconteceu: {ex.Message}");
-                return RedirectToAction("Criar");
+                return RedirectToAction("Index");
             }
         }
     }

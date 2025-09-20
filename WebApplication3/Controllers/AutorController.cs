@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using WebApplication3.Authenticacao;
 using WebApplication3.DataBase;
 using WebApplication3.Models;
 
 namespace WebApplication3.Controllers
 {
+    [SessionAuthorize]
     public class AutorController : Controller
     {
         private readonly Database db = new Database();
@@ -48,7 +50,7 @@ namespace WebApplication3.Controllers
                 }
             }
 
-            return RedirectToAction("CadastrarAutor");
+            return RedirectToAction("Index");
         }
 
         public IActionResult Editar(int id, string nome)
@@ -73,7 +75,7 @@ namespace WebApplication3.Controllers
 
             TempData["Ok"] = "autor Atualizado";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
     }
 }

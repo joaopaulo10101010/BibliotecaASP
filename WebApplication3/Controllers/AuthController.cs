@@ -68,9 +68,9 @@ namespace WebApplication3.Controllers
                 return View();
             }
             HttpContext.Session.SetInt32(SessionKeys.UserId, id);
-            HttpContext.Session.SetString(SessionKeys.UserId, nome);
-            HttpContext.Session.SetString(SessionKeys.UserId, email);
-            HttpContext.Session.SetString(SessionKeys.UserId, role);
+            HttpContext.Session.SetString(SessionKeys.UserName, nome);
+            HttpContext.Session.SetString(SessionKeys.UserEmail, email);
+            HttpContext.Session.SetString(SessionKeys.UserRole, role);
 
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
                 return Redirect(returnUrl);

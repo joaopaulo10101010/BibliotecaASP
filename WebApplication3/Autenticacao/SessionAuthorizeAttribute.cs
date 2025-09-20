@@ -43,7 +43,7 @@ namespace WebApplication3.Authenticacao
 
                 {
 
-                    context.Result = new ForbidResult(); // ou RedirectToAction("AcessoNegado", "Auth") 
+                    context.Result = new RedirectToActionResult("AcessoNegado", "Auth", null);
 
                     return;
 

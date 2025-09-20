@@ -3,12 +3,14 @@ using WebApplication3.Models;
 using WebApplication3.DataBase;
 using MySql.Data.MySqlClient;
 using BCrypt;
+using WebApplication3.Authenticacao;
 
 namespace WebApplication3.Controllers
 {
-    
+    [SessionAuthorize(RoleAnyOf = "Admin")]
     public class UsuariosController : Controller
     {
+        
         private readonly Database db = new Database();
         public IActionResult Index()
         {

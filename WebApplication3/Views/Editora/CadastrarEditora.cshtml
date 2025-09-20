@@ -1,10 +1,7 @@
 ﻿<form action="CadastrarEditora" method="POST">
-	<h2>Cadastrar Editora/autor/genero</h2>
+	<h2>Cadastrar Editora</h2>
 	<label for="editora-nome">Nome da Editora:</label>
 	<input type="text" id="editora-nome" name="editora" required maxlength="150">
-	<label for="genero-nome">Nome do Gênero:</label>
-	<input type="text" id="genero-nome" name="genero" required maxlength="100">
-	<label for="autor-nome">Nome do Autor:</label>
-	<input type="text" id="autor-nome" name="autor" required maxlength="150">
 	<button type="submit">Cadastrar</button>
 </form>
+<a asp-action="Index">Voltar</a>

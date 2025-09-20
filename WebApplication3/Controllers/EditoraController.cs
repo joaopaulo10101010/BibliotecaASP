@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using WebApplication3.Authenticacao;
 using WebApplication3.DataBase;
 using WebApplication3.Models;
 
 namespace WebApplication3.Controllers
 {
+    [SessionAuthorize]
     public class EditoraController : Controller
     {
         private readonly Database db = new Database();
@@ -52,7 +54,7 @@ namespace WebApplication3.Controllers
 
             TempData["Ok"] = "Editora Atualizado";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         public IActionResult Excluir(int id)
@@ -71,7 +73,7 @@ namespace WebApplication3.Controllers
             }
 
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
 
         public IActionResult CadastrarEditora()
@@ -93,31 +95,7 @@ namespace WebApplication3.Controllers
                     cmd.Dispose();
                 }
             }
-
-            if (string.IsNullOrEmpty(autor) == false)
-            {
-                using (var cmd = new MySqlCommand("sp_autor_criar", conn))
-                {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_nome", autor);
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
-                }
-            }
-
-            if (string.IsNullOrEmpty(genero) == false)
-            {
-                using (var cmd = new MySqlCommand("sp_genero_criar", conn))
-                {
-                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("p_nome", genero);
-                    cmd.ExecuteNonQuery();
-                    cmd.Dispose();
-                }
-            }
-
-
-            return RedirectToAction("CadastrarEditora");
+            return RedirectToAction("Index");
         }
     }
 }

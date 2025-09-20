@@ -6,7 +6,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSession(o =>
 {
     o.Cookie.Name = "Biblioteca.Session";
-    o.IdleTimeout = TimeSpan.FromSeconds(8);
+    o.IdleTimeout = TimeSpan.FromHours(8);
     o.Cookie.HttpOnly = true;
     o.Cookie.IsEssential = true;
 });

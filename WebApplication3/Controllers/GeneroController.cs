@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MySql.Data.MySqlClient;
+using WebApplication3.Authenticacao;
 using WebApplication3.DataBase;
 using WebApplication3.Models;
 
 namespace WebApplication3.Controllers
 {
+    [SessionAuthorize]
     public class GeneroController : Controller
     {
         private readonly Database db = new Database();
@@ -27,6 +29,29 @@ namespace WebApplication3.Controllers
             }
         }
 
+        public IActionResult CadastrarGenero()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CadastrarGenero(string genero)
+        {
+            using var conn = db.GetConnection();
+
+            if (string.IsNullOrEmpty(genero) == false)
+            {
+                using (var cmd = new MySqlCommand("sp_genero_criar", conn))
+                {
+                    cmd.CommandType = System.Data.CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("p_nome", genero);
+                    cmd.ExecuteNonQuery();
+                    cmd.Dispose();
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
         public IActionResult Editar(int id, string nome)
         {
             Genero autor = new Genero() { Id = id, Nome = nome };
@@ -47,9 +72,9 @@ namespace WebApplication3.Controllers
             cmd.Parameters.AddWithValue("p_nome", model.Nome);
             cmd.ExecuteNonQuery();
 
-            TempData["Ok"] = "autor Atualizado";
+            TempData["Ok"] = "genero Atualizado";
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index");
         }
     }
 }
