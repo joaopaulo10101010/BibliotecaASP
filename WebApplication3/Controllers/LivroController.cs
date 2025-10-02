@@ -204,10 +204,24 @@ namespace WebApplication3.Controllers
 
         }
         [HttpPost]
-        public IActionResult Criar(string titulo, string autor, string editora, string genero, string ano, string isbn, string quantidade)
+        public IActionResult Criar(string titulo, string autor, string editora, string genero, string ano, string isbn, string quantidade, IFormFile? capa)
         {
             try
             {
+                string? relPath = null;
+                if(capa != null && capa.Length > 0)
+                {
+                    var ext = Path.GetExtension(capa.FileName);
+                    var fileName = $"{Guid.NewGuid()}{ext}";
+                    var saveDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "capas");
+                    Directory.CreateDirectory(saveDir);
+                    var absPath = Path.Combine(saveDir, fileName);
+                    using var fs = new FileStream(absPath, FileMode.Create);
+                    capa.CopyTo(fs);
+                    relPath = Path.Combine("capas", fileName).Replace("\\", "/");
+                }
+
+
                 Console.WriteLine($"Titulo: {titulo}\nAutor: {autor}\nEditora: {editora}\nGenero: {genero}\nAno: {ano}\nIsbn: {isbn}\nQuantidade: {quantidade}");
 
                 using var conn = db.GetConnection();
@@ -221,6 +235,7 @@ namespace WebApplication3.Controllers
                     cmd.Parameters.AddWithValue("p_ano", ano);
                     cmd.Parameters.AddWithValue("p_isbn", isbn);
                     cmd.Parameters.AddWithValue("p_quantidade", quantidade);
+                    cmd.Parameters.AddWithValue("p_capa_arquivo", (object?)relPath ?? DBNull.Value);
                     cmd.ExecuteNonQuery();
                     cmd.Dispose();
                 }

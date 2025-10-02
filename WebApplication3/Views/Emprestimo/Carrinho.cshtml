@@ -1,0 +1,320 @@
+﻿@model List<WebApplication3.Models.Carrinho>
+
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewData["Title"] = "Carrinho";
+
+}
+
+<h2>Carrinho</h2>
+
+
+
+@if (!Model.Any())
+
+{
+
+    <p>Seu carrinho está vazio.</p>
+
+    <p><a asp-action="Vitrine">Voltar à vitrine</a></p>
+
+}
+
+else
+
+{
+
+    <div class="card">
+
+        <table class="tbl">
+
+            <thead><tr><th>Capa</th><th>Título</th><th style="width:140px">Ação</th></tr></thead>
+
+            <tbody>
+
+                @foreach (var it in Model)
+
+                {
+
+                    <tr>
+
+                        <td style="width:90px">
+
+                            <div class="thumb">
+
+                                @if (!string.IsNullOrWhiteSpace(it.CapaArquivo))
+
+                                {
+
+                                    <img src="~/@it.CapaArquivo" alt="@it.Titulo" />
+
+                                }
+
+                                else
+
+                                {
+
+
+
+                                    <span class="text-muted">Sem capa</span>
+
+                                }
+
+                            </div>
+
+                        </td>
+
+                        <td>@it.Titulo</td>
+
+                        <td>
+
+                            <form asp-action="RemoverDoCarrinho" method="post" style="display:inline" onsubmit="return confirm('Remover este livro do carrinho?');">
+
+                                @Html.AntiForgeryToken()
+
+                                <input type="hidden" name="id" value="@it.LivroId" />
+
+                                <button type="submit" class="btn btn-danger">Remover</button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                }
+
+            </tbody>
+
+        </table>
+
+
+
+        <h3 class="mt-8">Finalizar</h3>
+
+        <form asp-action="Finalizar" method="post">
+
+            @Html.AntiForgeryToken()
+
+            <div class="form-grid">
+
+                <div class="field">
+
+                    <label>Leitor</label>
+
+                    <input type="text" id="leitorNome" list="leitores" class="input" placeholder="Digite o nome do leitor..." autocomplete="off" required />
+
+                    <input type="hidden" id="idLeitor" name="idLeitor" />
+
+                    <datalist id="leitores">
+
+                        @if (ViewBag.Leitores is IEnumerable<(int Id, string Nome)> leitores)
+
+                        {
+
+                            foreach (var l in leitores)
+
+                            {
+
+                                <option value="@l.Nome" data-id="@l.Id"></option>
+
+                            }
+
+                        }
+
+                    </datalist>
+
+                    <small class="text-muted">Selecione um nome da lista para preencher o ID do leitor.</small>
+
+                </div>
+
+                <div class="field">
+
+                    <label>Data prevista de devolução</label>
+
+                    <input type="date" name="dataPrevista" class="input" required />
+
+                </div>
+
+            </div>
+
+
+
+            <div class="form-actions">
+
+                <button type="submit" class="btn btn-primary">Concluir Empréstimo</button>
+
+                <a asp-action="Vitrine" class="btn btn-light">Continuar reservando</a>
+
+            </div>
+
+        </form>
+
+    </div>
+
+}
+
+
+
+@section Scripts {
+
+    <script>
+
+
+        (function(){
+
+          const inputNome = document.getElementById("leitorNome");
+
+          const inputId   = document.getElementById("idLeitor");
+
+          function syncId(){
+
+            const opt = document.querySelector(`#leitores option[value="${CSS.escape(inputNome.value)}"]`);
+
+            inputId.value = opt ? opt.dataset.id : "";
+
+          }
+
+          inputNome.addEventListener("input",  syncId);
+
+          inputNome.addEventListener("change", syncId);
+
+        })();
+
+    </script>
+
+}
+
+
+
+@section Styles {
+
+    <style>
+
+        .card {
+            background: #fff;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,.06);
+            padding: 16px
+        }
+
+        .tbl {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden
+        }
+
+            .tbl thead th {
+                background: #f8fafc;
+                padding: 12px 14px;
+                border-bottom: 1px solid #e5e7eb;
+                text-align: left
+            }
+
+            .tbl tbody td {
+                padding: 12px 14px;
+                border-bottom: 1px solid #f1f5f9;
+                vertical-align: middle
+            }
+
+            .tbl tbody tr:last-child td {
+                border-bottom: none
+            }
+
+        .thumb {
+            width: 70px;
+            height: 70px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #e5e7eb
+        }
+
+            .thumb img {
+                max-width: 100%;
+                max-height: 100%;
+                display: block
+            }
+
+        .mt-8 {
+            margin-top: 12px
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px
+        }
+
+        .form-grid {
+            display: grid;
+            gap: 12px;
+            grid-template-columns: 1fr 1fr
+        }
+
+        .input {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px
+        }
+
+            .input:focus {
+                outline: none;
+                border-color: #2563eb;
+                box-shadow: 0 0 0 3px rgba(37,99,235,.15)
+            }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 9px 14px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            cursor: pointer;
+            background: #eef2ff;
+            color: #1e3a8a
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: #fff
+        }
+
+        .btn-light {
+            background: #f3f4f6;
+            border-color: #e5e7eb;
+            color: #111
+        }
+
+        .btn-danger {
+            background: #fee2e2;
+            border-color: #fecaca;
+            color: #991b1b
+        }
+
+        .text-muted {
+            color: #64748b;
+            font-size: .92rem
+        }
+    </style>
+
+}
+

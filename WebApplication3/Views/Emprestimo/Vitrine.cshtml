@@ -1,0 +1,110 @@
+﻿@model IEnumerable<WebApplication3.Models.Livros>
+
+
+
+@{
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    ViewData["Title"] = "Vitrine";
+
+}
+
+
+
+<h2>Vitrine</h2>
+
+
+<!-- Formulário de busca -->
+
+<form method="get" asp-action="Vitrine" style="margin-bottom:10px">
+
+    <input list="livros" name="q" value="@ViewBag.q" placeholder="Buscar por título..." style="width:300px" />
+
+    <datalist id="livros">
+
+        @if (ViewBag.Titulos is IEnumerable<string> ts)
+
+        {
+
+            foreach (var t in ts)
+
+            {
+
+                <option value="@t"></option>
+
+            }
+
+        }
+
+    </datalist>
+
+    <button type="submit">Buscar</button>
+
+    <a asp-action="Carrinho" style="margin-left:10px">Ver carrinho</a>
+
+</form>
+
+
+
+@if (TempData["ok"] != null)
+
+{
+
+    <div class="ok">@TempData["ok"]</div>
+
+}
+
+
+
+<!-- Grid de livros -->
+
+<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">
+
+    @foreach (var l in Model)
+
+    {
+
+        <div style="border:1px solid #eee;border-radius:8px;padding:10px">
+
+            <div style="height:220px;display:flex;align-items:center;justify-content:center;background:#fafafa;border-radius:6px;overflow:hidden">
+
+                @if (!string.IsNullOrWhiteSpace(l.CapaArquivo))
+
+                {
+
+                    <img src="~/@l.CapaArquivo" alt="@l.Titulo" style="max-height:100%;max-width:100%" />
+
+                }
+
+                else
+
+                {
+
+                    <span style="color:#aaa">Sem capa</span>
+
+                }
+
+            </div>
+
+
+
+            <div style="margin-top:8px;font-weight:600">@l.Titulo</div>
+
+
+
+            <form asp-action="AdicionarAoCarrinho" method="post" style="margin-top:8px">
+
+                @Html.AntiForgeryToken()
+
+                <input type="hidden" name="id" value="@l.Id" />
+
+                <button type="submit">Reservar</button>
+
+            </form>
+
+        </div>
+
+    }
+
+</div> 

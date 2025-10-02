@@ -107,13 +107,12 @@
 
                 <a asp-controller="Genero" asp-action="Index">Gêneros</a>
 
-                <a asp-controller="Usuarios" asp-action="CriarUsuario">Criar Usuario</a>
-
+                <a asp-controller="Emprestimo" asp-action="Vitrine">Emprestimos</a>
 
 
                 @* Somente Admin vê Usuários *@ 
 
-                @if (role == "Adm")
+                @if (role == "Admin")
 
                 {
 

@@ -30,6 +30,8 @@ namespace WebApplication3.Models
 
         public string Genero { get; set; }
 
+        public string? CapaArquivo { get; set; }
+
 
 
         public List<SelectListItem> AutorNome { get; set; } = new();
